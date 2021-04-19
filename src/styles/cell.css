@@ -1,37 +1,38 @@
 .cell {
-	display: flex;
-	position: relative;
-	align-items: center;
-	justify-content: center;
-	background: lightgray;
-	box-sizing: border-box;
-	outline: 1px solid gray;
-	border-right: 4px outset lightgray;
-	border-bottom: 4px outset lightgray;
-	border-top: 4px outset white;
-	border-left: 4px outset white;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  background: lightgray;
+  box-sizing: border-box;
+  outline: 1px solid gray;
+  border-right: 4px outset lightgray;
+  border-bottom: 4px outset lightgray;
+  border-top: 4px outset white;
+  border-left: 4px outset white;
+  margin: 0;
 }
 
 .cell p {
-	font-size: 2rem;
+  font-size: 2rem;
 }
 
 svg[data-name="flag-marker"] {
-	color: red;
-	width: 70%;
-	height: 70%;
+  color: red;
+  width: 70%;
+  height: 70%;
 }
 
 svg[data-name="mine"] {
-	width: 70%;
-	height: 70%;
-	color: black;
+  width: 70%;
+  height: 70%;
+  color: black;
 }
 
 .is-mine {
-	background: red;
+  background: red;
 }
 
 .revealed {
-	border: 1px solid gray;
+  border: 1px solid gray;
 }
