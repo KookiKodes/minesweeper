@@ -7,4 +7,7 @@ export const FlagMarker = stamp(Svg, {
 		htmlString: flagSvg.trim(),
 		name: "flag-marker",
 	},
+	propertyDescriptors: {
+		name: { value: "flag-marker" },
+	},
 });

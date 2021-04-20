@@ -18,4 +18,7 @@ export const EventHandler = stamp(ElementHandler, {
 			this.element.addEventListener(type, cb);
 		},
 	},
+	propertyDescriptors: {
+		name: { value: "event-handler" },
+	},
 });

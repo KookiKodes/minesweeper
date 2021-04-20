@@ -18,4 +18,7 @@ export const InstanceCounter = stamp({
 	composers({ stamp }) {
 		stamp.compose.configuration.instances = 0;
 	},
+	propertyDescriptors: {
+		name: { value: "instance-counter" },
+	},
 });
