@@ -1,7 +1,6 @@
 import stamp from "tp-stampit";
-import { InstanceCounter } from "../Helpers/InstanceCounter";
 
-export const ElementHandler = stamp(InstanceCounter, {
+export const ElementHandler = stamp({
 	props: {
 		element: null,
 	},
@@ -25,12 +24,8 @@ export const ElementHandler = stamp(InstanceCounter, {
 		removeElem(...args): void {
 			args.forEach((child) => {
 				try {
-					this.element.removeChild(child.element);
-				} catch (error) {
-					console.log(
-						"This is from trying to remove an child element that does not exist within the parent"
-					);
-				}
+					child.element.remove();
+				} catch (error) {}
 			});
 		},
 		addClass(...args: string[]): void {
@@ -42,6 +37,12 @@ export const ElementHandler = stamp(InstanceCounter, {
 			args.forEach((className: string) => {
 				this.element.classList.remove(className);
 			});
+		},
+		hideElem() {
+			this.element.classList.add("hidden");
+		},
+		showElem() {
+			this.element.classList.remove("hidden");
 		},
 		addAttr(...args: [string, any][]): void {
 			args.forEach(([key, value]) => {

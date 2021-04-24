@@ -1,0 +1,8 @@
+.interface {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-width: 100vw;
+	height: 100px;
+	background: lightgrey;
+}

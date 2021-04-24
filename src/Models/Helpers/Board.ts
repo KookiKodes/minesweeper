@@ -1,15 +1,15 @@
 import stamp from "tp-stampit";
 import { EventHandler } from "./EventHandler";
 import { Cell } from "./Cell";
-import { Instance } from "./Instance";
 
-export const Board = stamp(EventHandler, Instance, {
+export const Board = stamp(EventHandler, {
 	props: {
-		element: "ul",
+		element: "div",
 		size: [10, 10],
 		cellValueTypes: [],
 		cellType: Cell,
 		cellSize: 25,
+		cells: null,
 	},
 	init({
 		size = this.size,
@@ -21,6 +21,7 @@ export const Board = stamp(EventHandler, Instance, {
 		this.cellValueTypes = cellValueTypes;
 		this.cellType = cellType;
 		this.cellSize = cellSize;
+		this.cells = [];
 
 		this.addAttr(["id", `board-${this.instanceIndex}`]);
 
@@ -30,10 +31,7 @@ export const Board = stamp(EventHandler, Instance, {
 		this.style({ height: `${rows * this.cellSize}px` });
 	},
 	methods: {
-		async generateBoard(
-			genNewCellValue: (valueTypes) => Promise<any>,
-			determineAdjacent?: () => Promise<void>
-		) {
+		async generateBoard(genNewCellValue: (valueTypes) => Promise<any>) {
 			const [rows, cols] = this.size;
 			for (let i = 0; i < rows * cols; i++) {
 				const newCellValue = await genNewCellValue(this.cellValueTypes);
@@ -42,10 +40,11 @@ export const Board = stamp(EventHandler, Instance, {
 					size: this.cellSize,
 					element: "li",
 					className: "cell",
+					index: i,
 				});
 				this.appendElem(newCell);
+				this.cells.push(newCell);
 			}
-			if (determineAdjacent) determineAdjacent.call(this);
 		},
 	},
 	propertyDescriptors: {

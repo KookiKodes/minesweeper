@@ -1,8 +1,7 @@
 import stamp from "tp-stampit";
 import { ElementHandler } from "./ElementHandler";
-import { Instance } from "../Helpers/Instance";
 
-export const Svg = stamp(ElementHandler, Instance, {
+export const Svg = stamp(ElementHandler, {
 	props: {
 		element: "template",
 		name: "svg",

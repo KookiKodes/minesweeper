@@ -3,7 +3,7 @@ import { ElementHandler } from "../View/ElementHandler";
 
 export const EventHandler = stamp(ElementHandler, {
 	props: {
-		events: new Map(),
+		events: null,
 	},
 	init() {
 		this.events = new Map();
@@ -16,6 +16,9 @@ export const EventHandler = stamp(ElementHandler, {
 			if (!this.events.has(type)) this.events.set(type, [cb]);
 			else this.events.get(type).push(cb);
 			this.element.addEventListener(type, cb);
+		},
+		clearAllEvents() {
+			this.events.clear();
 		},
 	},
 	propertyDescriptors: {

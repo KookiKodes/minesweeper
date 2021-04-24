@@ -44,7 +44,8 @@ svg[data-name="mine"] {
 	border: 1px solid gray;
 	transform: translateZ(1000px);
 }
-
 .revealed:hover {
-	cursor: not-allowed;
+	box-shadow: none !important;
+	z-index: 0 !important;
+	cursor: default;
 }

@@ -13,6 +13,10 @@ export const Instance = stamp(InstanceCounter, {
 		getAllInstances(): any[] {
 			return this.compose.configuration.allInstanceReferences;
 		},
+		reset() {
+			this.compose.configuration.instances = 0;
+			return (this.compose.configuration.allInstanceReferences = []);
+		},
 	},
 	staticPropertyDescriptors: {
 		name: { value: "instance" },
