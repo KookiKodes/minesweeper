@@ -8,7 +8,7 @@ import "../../styles/minesweeper.css";
 
 export const MineSweeper = stamp(EventHandler, {
 	props: {
-		board: SweeperBoard({ size: [10, 10], cellSize: 70, className: "board" }),
+		board: SweeperBoard({ size: [16, 30], cellSize: 70, className: "board" }),
 		interface: SweeperInterface(),
 		element: "main",
 		button: null,

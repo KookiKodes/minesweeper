@@ -24,11 +24,11 @@ export const SweeperBoard = stamp(Board, {
 		async updateMineAdjacents() {
 			for (let mine of this.mines) {
 				const { index } = mine.parent;
-				this.calcAdjacent(index, (cell) => {
-					if (!cell.isMine()) {
-						cell.value.increment();
-					}
-				});
+				this.checkAndUpdateAdjacent(
+					index,
+					(cell) => !cell.isMine(),
+					(cell) => cell.value.increment()
+				);
 			}
 		},
 		async updateMarker(e) {
@@ -36,14 +36,21 @@ export const SweeperBoard = stamp(Board, {
 			const cell = this.findCellFromElem(e.target);
 			cell.updateMark();
 		},
-		// Depth will be considered as the distance from an empty cell. If the depth is 0 than only empty cells would be displayed. If the depth is 1 then adjacent cells that are 1 away from the empty cells would be displayed.
-		async revealAdjacents(cell, index, depth = 0) {
-			//Need to determine algorithm for depth
+		updateEmptyAdjacents(cell, index: number, depth = 0) {
+			if (depth > 0) {
+				this.checkAndUpdateAdjacent(
+					index,
+					(adj) => cell.isEmpty() && !adj.isRevealed() && !adj.isEmpty(),
+					(adj) => adj.reveal()
+				);
+			}
+		},
+		async revealAdjacents(cell, index) {
 			if (!cell.isRevealed() && cell.isEmpty()) {
 				cell.reveal();
-				this.calcAdjacent(index, (cell, index) => {
-					const tempDepth = depth;
-					this.revealAdjacents(cell, index, tempDepth);
+				this.updateAdjacent(index, (cell, index) => {
+					this.revealAdjacents(cell, index);
+					this.updateEmptyAdjacents(cell, index, 1);
 				});
 			}
 		},
@@ -53,11 +60,8 @@ export const SweeperBoard = stamp(Board, {
 				if (this.firstClickIndex === null) {
 					this.firstClickIndex = cell.index;
 					this.addMines();
-					this.revealAdjacents(cell, cell.index, 1);
-				} else {
-					this.revealAdjacents(cell, cell.index);
-					cell.reveal();
 				}
+				this.revealAdjacents(cell, cell.index);
 			}
 		},
 		printCellTypeTotals() {
@@ -73,16 +77,7 @@ export const SweeperBoard = stamp(Board, {
 			console.table(result);
 		},
 		async addMines() {
-			const [rows, cols] = this.size,
-				maxMines = Math.round(
-					(rows *
-						cols *
-						Math.abs(
-							((Math.sin(rows) * Math.cos(cols)) / Math.cos(rows)) *
-								Math.sin(cols)
-						)) /
-						Math.PI
-				),
+			const maxMines = 99,
 				min = Math.ceil(0),
 				max = Math.floor(this.cells.length),
 				set = new Set(),
@@ -142,7 +137,10 @@ export const SweeperBoard = stamp(Board, {
 			const cols = this.size[1];
 			return this.isValid(row * cols + cols, row * cols + cols * 2 - 1, dir);
 		},
-		calcAdjacent(index: number, cb: (cell: any, index?: number) => void): void {
+		updateAdjacent(
+			index: number,
+			cb: (cell: any, index?: number) => void
+		): void {
 			const row = Math.floor(index / this.size[1]),
 				[nw, n, ne, w, e, sw, s, se] = this.getAdjIndex(index);
 
@@ -172,6 +170,31 @@ export const SweeperBoard = stamp(Board, {
 			if (this.isSouth(row, se) && check(this.cells[se], se)) return true;
 
 			return false;
+		},
+		checkAndUpdateAdjacent(
+			index,
+			check: (cell, dir: number) => boolean,
+			cb: (cell, dir: number) => void
+		): void {
+			const row = Math.floor(index / this.size[1]),
+				[nw, n, ne, w, e, sw, s, se] = this.getAdjIndex(index);
+
+			if (this.isNorth(row, nw) && check(this.cells[nw], nw))
+				setTimeout(() => cb(this.cells[nw], nw), 1);
+			if (this.isNorth(row, n) && check(this.cells[n], n))
+				setTimeout(() => cb(this.cells[n], n), 1);
+			if (this.isNorth(row, ne) && check(this.cells[ne], ne))
+				setTimeout(() => cb(this.cells[ne], ne), 1);
+			if (this.isSameRow(row, w) && check(this.cells[w], w))
+				setTimeout(() => cb(this.cells[w], w), 1);
+			if (this.isSameRow(row, e) && check(this.cells[e], e))
+				setTimeout(() => cb(this.cells[e], e), 1);
+			if (this.isSouth(row, sw) && check(this.cells[sw], sw))
+				setTimeout(() => cb(this.cells[sw], sw), 1);
+			if (this.isSouth(row, s) && check(this.cells[s], s))
+				setTimeout(() => cb(this.cells[s], s), 1);
+			if (this.isSouth(row, se) && check(this.cells[se], se))
+				setTimeout(() => cb(this.cells[se], se), 1);
 		},
 	},
 	propertyDescriptors: {
