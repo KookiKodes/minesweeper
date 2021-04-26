@@ -13,17 +13,19 @@ export const SweeperBoard = stamp(Board, {
 		firstClickIndex: null,
 		element: "ul",
 	},
-	init() {
+	init({ minePercentage = 0.21 }) {
 		this.mines = [];
 		this.generateBoard(async (cellValueType) => cellValueType[0]());
 
 		this.addEvent("contextmenu", this.updateMarker.bind(this));
 		this.addEvent("click", this.revealCell.bind(this));
+
+		this.addMines = this.addMines.bind(this, minePercentage);
 	},
 	methods: {
 		async updateMineAdjacents() {
-			for (let mine of this.mines) {
-				const { index } = mine.parent;
+			for (let cell of this.mines) {
+				const { index } = cell;
 				this.checkAndUpdateAdjacent(
 					index,
 					(cell) => !cell.isMine(),
@@ -45,13 +47,17 @@ export const SweeperBoard = stamp(Board, {
 				);
 			}
 		},
-		async revealAdjacents(cell, index) {
-			if (!cell.isRevealed() && cell.isEmpty()) {
+		async revealAdjacentsIfEmpty(cell, index) {
+			if (!cell.isRevealed()) {
 				cell.reveal();
-				this.updateAdjacent(index, (cell, index) => {
-					this.revealAdjacents(cell, index);
-					this.updateEmptyAdjacents(cell, index, 1);
-				});
+				this.checkAndUpdateAdjacent(
+					index,
+					() => cell.isEmpty(),
+					(adj, dir) => {
+						this.revealAdjacentsIfEmpty(adj, dir);
+						this.updateEmptyAdjacents(adj, dir, 1);
+					}
+				);
 			}
 		},
 		async revealCell(e) {
@@ -61,7 +67,7 @@ export const SweeperBoard = stamp(Board, {
 					this.firstClickIndex = cell.index;
 					this.addMines();
 				}
-				this.revealAdjacents(cell, cell.index);
+				this.revealAdjacentsIfEmpty(cell, cell.index);
 			}
 		},
 		printCellTypeTotals() {
@@ -76,8 +82,9 @@ export const SweeperBoard = stamp(Board, {
 			);
 			console.table(result);
 		},
-		async addMines() {
-			const maxMines = 99,
+		async addMines(minePercentage?: number) {
+			const [rows, cols] = this.size,
+				maxMines = rows * cols * minePercentage,
 				min = Math.ceil(0),
 				max = Math.floor(this.cells.length),
 				set = new Set(),
@@ -88,18 +95,24 @@ export const SweeperBoard = stamp(Board, {
 				const rand = Math.floor(Math.random() * (max - min)),
 					cell = cells[rand];
 				if (!set.has(cell) && rand !== index) {
+					//Checks to see if the cell is adjacent to the index that was firstClicked
 					const isAdjacent = this.checkAdjacent(
 						index,
-						(cell, dir: number) => dir === rand
+						(adj, dir: number) => dir === rand
 					);
+
+					//If not adjacent set the value of the cell to a newly generated mine and push the cell into our array of mines.
 					if (!isAdjacent) {
-						cell.updateValue(Mine({ parent: cell }));
-						this.mines.push(cell.value);
+						cell.updateValue(Mine());
+						this.mines.push(cell);
 					}
 				}
+
+				//We add the space to the sett to prevent duplicates
 				set.add(cell);
 			}
-			await this.updateMineAdjacents();
+			//Updates all of the tiles values if it's adjacent to a mine.
+			this.updateMineAdjacents();
 		},
 		findCellFromElem(elem: Element): any {
 			if (!elem.hasAttribute("index")) {
@@ -136,22 +149,6 @@ export const SweeperBoard = stamp(Board, {
 		isSouth(row: number, dir: number): boolean {
 			const cols = this.size[1];
 			return this.isValid(row * cols + cols, row * cols + cols * 2 - 1, dir);
-		},
-		updateAdjacent(
-			index: number,
-			cb: (cell: any, index?: number) => void
-		): void {
-			const row = Math.floor(index / this.size[1]),
-				[nw, n, ne, w, e, sw, s, se] = this.getAdjIndex(index);
-
-			if (this.isNorth(row, nw)) setTimeout(() => cb(this.cells[nw], nw), 1);
-			if (this.isNorth(row, n)) setTimeout(() => cb(this.cells[n], n), 1);
-			if (this.isNorth(row, ne)) setTimeout(() => cb(this.cells[ne], ne), 1);
-			if (this.isSameRow(row, w)) setTimeout(() => cb(this.cells[w], w), 1);
-			if (this.isSameRow(row, e)) setTimeout(() => cb(this.cells[e], e), 1);
-			if (this.isSouth(row, sw)) setTimeout(() => cb(this.cells[sw], sw), 1);
-			if (this.isSouth(row, s)) setTimeout(() => cb(this.cells[s], s), 1);
-			if (this.isSouth(row, se)) setTimeout(() => cb(this.cells[se], se), 1);
 		},
 		checkAdjacent(
 			index: number,

@@ -8,7 +8,12 @@ import "../../styles/minesweeper.css";
 
 export const MineSweeper = stamp(EventHandler, {
 	props: {
-		board: SweeperBoard({ size: [16, 30], cellSize: 70, className: "board" }),
+		board: SweeperBoard({
+			size: [10, 10],
+			cellSize: 70,
+			className: "board",
+			minePercentage: 0.21,
+		}),
 		interface: SweeperInterface(),
 		element: "main",
 		button: null,
@@ -19,7 +24,7 @@ export const MineSweeper = stamp(EventHandler, {
 		this.button.addEvent("click", (e) => {
 			this.removeElem(this.board);
 			this.board = SweeperBoard({
-				size: [100, 20],
+				size: [50, 25],
 				cellSize: 70,
 				className: "board",
 			});
