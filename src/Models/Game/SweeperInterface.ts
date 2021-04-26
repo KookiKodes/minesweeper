@@ -7,7 +7,7 @@ import "../../styles/interface.css";
 export const SweeperInterface = stamp(ElementHandler, {
 	props: {
 		element: "div",
-		timer: Timer(),
+		timer: Timer({ className: "timer", timerPadding: 3 }),
 	},
 	init() {
 		this.appendElem(this.timer);

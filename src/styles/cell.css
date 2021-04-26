@@ -3,24 +3,26 @@
 	position: relative;
 	align-items: center;
 	justify-content: center;
-	background: lightgray;
+	background: var(--prim);
+	border-radius: 0.5em;
+	box-shadow: 0 0 0 1px var(--sec);
 	box-sizing: border-box;
-	outline: 1px solid gray;
-	border-right: 4px outset lightgray;
-	border-bottom: 4px outset lightgray;
-	border-top: 4px outset white;
-	border-left: 4px outset white;
+	border-right: 3px outset var(--prim-100);
+	border-bottom: 3px outset var(--prim-100);
+	border-top: 3px outset var(--prim-600);
+	border-left: 3px outset var(--prim-600);
 	margin: 0;
 }
 
 .cell p {
-	font-size: 2rem;
+	font-size: calc(100% + 1vw);
+	opacity: 50%;
 }
 
 .cell:hover {
 	cursor: pointer;
 	transform: translateZ(1000px);
-	box-shadow: 0 0 5px black;
+	box-shadow: 0 0 1px 2px var(--sec);
 	z-index: 100;
 }
 
@@ -33,19 +35,70 @@ svg[data-name="flag-marker"] {
 svg[data-name="mine"] {
 	width: 70%;
 	height: 70%;
-	color: black;
+	color: var(--accent);
+}
+
+path {
+	stroke: var(--prim-900);
+	stroke-width: 5px;
+	stroke-linejoin: round;
 }
 
 .is-mine {
-	background: red;
+	background: hsl(0, 100%, 50%, 50%) !important;
+	animation: 0.3s cubic-bezier(0.1, -0.6, 0.2, 0) infinite alternate explode !important;
+	z-index: 1000;
+}
+
+.is-mine svg[data-name="mine"] {
+}
+
+@keyframes explode {
+	0% {
+		transform: scale(0.9) translate(10%, 10%);
+	}
+
+	25% {
+		transform: scale(0.95) translate(-5%, 5%);
+	}
+
+	50% {
+		transform: scale(1) translate(0, 0);
+	}
+
+	75% {
+		transform: scale(1.05) translate(5%, -5%);
+	}
+
+	100% {
+		transform: scale(1.1) translate(-10%, -10%);
+	}
 }
 
 .revealed {
-	border: 1px solid gray;
+	border: none;
 	transform: translateZ(1000px);
+	background: var(--prim-600);
+	animation: 0.3s ease-out flip;
 }
+
+@keyframes flip {
+	0% {
+		transform: scale(1);
+		z-index: 1000;
+	}
+	50% {
+		transform: scale(1.4);
+		z-index: 1000;
+	}
+	100% {
+		transform: scale(1);
+		z-index: 1;
+	}
+}
+
 .revealed:hover {
-	box-shadow: none !important;
 	z-index: 0 !important;
+	box-shadow: 0 0 0 1px var(--sec) !important;
 	cursor: default;
 }

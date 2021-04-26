@@ -10,29 +10,28 @@ export const MineSweeper = stamp(EventHandler, {
 	props: {
 		board: SweeperBoard({
 			size: [10, 10],
-			cellSize: 70,
+			cellSize: 100,
 			className: "board",
 			minePercentage: 0.21,
 		}),
-		interface: SweeperInterface(),
+		interface: SweeperInterface({ className: "interface" }),
 		element: "main",
-		button: null,
 	},
 	init({}) {
-		this.button = Button({ value: Text({ value: "Update Size" }) });
-		this.appendElem(this.interface, this.board, this.button);
-		this.button.addEvent("click", (e) => {
-			this.removeElem(this.board);
-			this.board = SweeperBoard({
-				size: [50, 25],
+		this.appendElem(this.board);
+		const button = Button({ value: Text({ value: "Update Board Size" }) });
+		this.appendElem(button);
+		button.addEvent("click", (e) => {
+			const newBoard = SweeperBoard({
+				size: [30, 30],
 				cellSize: 70,
 				className: "board",
+				minePercentage: 0.1,
 			});
-			this.appendElem(this.board);
+			this.board.replaceElem(newBoard);
+			delete this.board;
+			this.board = newBoard;
 		});
-		const button = Button({ value: Text({ value: "Print values" }) });
-		this.appendElem(button);
-		button.addEvent("click", (e) => this.board.printCellTypeTotals());
 	},
 	propertyDescriptors: {
 		name: { value: "minesweeper" },

@@ -1,11 +1,28 @@
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
+:root {
+	--prim: hsl(29, 59%, 90%, 100%);
+	--sec: hsl(224, 32%, 44%, 100%);
+	--accent: hsl(160, 54%, 73%, 100%);
+
+	--prim-100: hsl(29, 59%, 50%, 100%);
+	--prim-200: hsl(29, 59%, 60%, 100%);
+	--prim-300: hsl(29, 59%, 70%, 100%);
+	--prim-400: hsl(29, 59%, 80%, 100%);
+	--prim-500: hsl(29, 59%, 90%, 100%);
+	--prim-600: hsl(29, 59%, 95%, 100%);
+	--prim-700: hsl(29, 59%, 100%, 100%);
+	--prim-800: hsl(29, 64%, 100%, 100%);
+	--prim-900: hsl(29, 69%, 100%, 100%);
+}
+
 body,
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
 	font-family: "Press Start 2P";
+	user-select: none;
 }
 
 .btn {
@@ -16,7 +33,7 @@ body,
 	height: 33px;
 	margin: 0 20px;
 	font-size: 16px;
-	background: orange;
+	color: orange;
 	outline: none;
 	border: none;
 	border-radius: 0.3rem;

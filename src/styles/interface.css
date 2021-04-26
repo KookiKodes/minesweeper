@@ -2,7 +2,12 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	min-width: 100vw;
-	height: 100px;
+	position: fixed;
 	background: lightgrey;
+	justify-self: flex-start;
+}
+
+.timer {
+	font-size: 40px;
+	color: red;
 }

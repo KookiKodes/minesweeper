@@ -5,6 +5,11 @@ export const Timer = stamp(Text, {
 	props: {
 		value: 0,
 		timerRef: null,
+		timerPadding: 0,
+	},
+	init({ timerPadding = this.timerPadding }) {
+		this.timerPadding = timerPadding;
+		this.update();
 	},
 	methods: {
 		start() {
@@ -31,7 +36,7 @@ export const Timer = stamp(Text, {
 			this.update();
 		},
 		update() {
-			this.addText(this.value);
+			this.addText(this.value.toString().padStart(this.timerPadding, "0"));
 		},
 	},
 	propertyDescriptors: {

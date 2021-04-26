@@ -11,6 +11,7 @@ export const SweeperBoard = stamp(Board, {
 		cellType: SweeperCell,
 		mines: null,
 		firstClickIndex: null,
+		lastClickedIndex: null,
 		element: "ul",
 	},
 	init({ minePercentage = 0.21 }) {
@@ -38,14 +39,12 @@ export const SweeperBoard = stamp(Board, {
 			const cell = this.findCellFromElem(e.target);
 			cell.updateMark();
 		},
-		updateEmptyAdjacents(cell, index: number, depth = 0) {
-			if (depth > 0) {
-				this.checkAndUpdateAdjacent(
-					index,
-					(adj) => cell.isEmpty() && !adj.isRevealed() && !adj.isEmpty(),
-					(adj) => adj.reveal()
-				);
-			}
+		updateEmptyAdjacents(cell, index: number) {
+			this.checkAndUpdateAdjacent(
+				index,
+				(adj) => cell.isEmpty() && !adj.isRevealed() && !adj.isEmpty(),
+				(adj) => adj.reveal()
+			);
 		},
 		async revealAdjacentsIfEmpty(cell, index) {
 			if (!cell.isRevealed()) {
@@ -55,7 +54,7 @@ export const SweeperBoard = stamp(Board, {
 					() => cell.isEmpty(),
 					(adj, dir) => {
 						this.revealAdjacentsIfEmpty(adj, dir);
-						this.updateEmptyAdjacents(adj, dir, 1);
+						this.updateEmptyAdjacents(adj, dir);
 					}
 				);
 			}
@@ -63,12 +62,20 @@ export const SweeperBoard = stamp(Board, {
 		async revealCell(e) {
 			if (Array.from(e.target.children).length !== this.cells.length) {
 				const cell = this.findCellFromElem(e.target);
+				this.lastClickedIndex = cell.index;
 				if (this.firstClickIndex === null) {
 					this.firstClickIndex = cell.index;
 					this.addMines();
 				}
 				this.revealAdjacentsIfEmpty(cell, cell.index);
 			}
+		},
+		revealAll() {
+			this.cells.forEach((cell) => {
+				if (!cell.isRevealed()) {
+					cell.reveal();
+				}
+			});
 		},
 		printCellTypeTotals() {
 			const result = this.cells.reduce(
@@ -192,6 +199,18 @@ export const SweeperBoard = stamp(Board, {
 				setTimeout(() => cb(this.cells[s], s), 1);
 			if (this.isSouth(row, se) && check(this.cells[se], se))
 				setTimeout(() => cb(this.cells[se], se), 1);
+		},
+		getTotalMines(): number {
+			return this.getAllMines().length;
+		},
+		getAllMines(): any[] {
+			return this.mines;
+		},
+		getTotalMarkers(): number {
+			return this.getAllMarked().length;
+		},
+		getAllMarked(): any[] {
+			return this.cells.filter((cell) => cell.marked);
 		},
 	},
 	propertyDescriptors: {

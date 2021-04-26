@@ -75,6 +75,12 @@ export const ElementHandler = stamp({
 		style(props: { [key: string]: string | number }): void {
 			Object.assign(this.element.style, props);
 		},
+		replaceElem(stamp) {
+			this.element.parentNode.replaceChild(stamp.element, this.element);
+		},
+		replaceChildElem(child, stamp) {
+			child.element.parentNode.replaceChild(stamp.element, child.element);
+		},
 	},
 	propertyDescriptors: {
 		name: { value: "element-handler" },

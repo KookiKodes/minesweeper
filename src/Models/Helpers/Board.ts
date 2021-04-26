@@ -23,7 +23,7 @@ export const Board = stamp(EventHandler, {
 		this.cellSize = cellSize;
 		this.cells = [];
 
-		this.addAttr(["id", `board-${this.instanceIndex}`]);
+		this.addAttr(["id", this.name]);
 
 		const [rows, cols] = this.size;
 
