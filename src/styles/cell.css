@@ -51,6 +51,34 @@ path {
 }
 
 .is-mine svg[data-name="mine"] {
+	animation: 0.3s cubic-bezier(0.1, -0.6, 0.2, 0) 0.1s infinite alternate stay !important;
+}
+
+@keyframes stay {
+	0% {
+		transform: scale3d(0.95);
+		color: var(--accent);
+	}
+
+	25% {
+		transform: scale(0.8);
+		color: var(--accent);
+	}
+
+	50% {
+		transform: scale(1);
+		color: var(--accent);
+	}
+
+	75% {
+		transform: scale(1.05);
+		color: var(--sec);
+	}
+
+	100% {
+		transform: scale(1.2);
+		color: var(--accent);
+	}
 }
 
 @keyframes explode {
@@ -64,14 +92,18 @@ path {
 
 	50% {
 		transform: scale(1) translate(0, 0);
+		filter: blur(1px);
 	}
 
 	75% {
 		transform: scale(1.05) translate(5%, -5%);
+		filter: blur(2px);
 	}
 
 	100% {
-		transform: scale(1.1) translate(-10%, -10%);
+		transform: scale(1.1) translate(-10%, -10%) perspective(500px);
+		filter: blur(3px);
+		box-shadow: -5px -10px 10px 1px var(--accent);
 	}
 }
 
