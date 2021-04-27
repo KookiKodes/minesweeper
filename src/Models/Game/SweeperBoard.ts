@@ -39,23 +39,25 @@ export const SweeperBoard = stamp(Board, {
 			const cell = this.findCellFromElem(e.target);
 			cell.updateMark();
 		},
-		updateEmptyAdjacents(cell, index: number) {
+		updateEmptyAdjacents(cell, index: number, delay: number) {
 			this.checkAndUpdateAdjacent(
 				index,
 				(adj) => cell.isEmpty() && !adj.isRevealed() && !adj.isEmpty(),
-				(adj) => adj.reveal()
+				(adj) => adj.reveal(),
+				delay
 			);
 		},
-		async revealAdjacentsIfEmpty(cell, index) {
+		async revealAdjacentsIfEmpty(cell, index: number, delay: number) {
 			if (!cell.isRevealed()) {
 				cell.reveal();
 				this.checkAndUpdateAdjacent(
 					index,
 					() => cell.isEmpty(),
 					(adj, dir) => {
-						this.revealAdjacentsIfEmpty(adj, dir);
-						this.updateEmptyAdjacents(adj, dir);
-					}
+						this.revealAdjacentsIfEmpty(adj, dir, delay);
+						this.updateEmptyAdjacents(adj, dir, delay);
+					},
+					delay
 				);
 			}
 		},
@@ -67,7 +69,7 @@ export const SweeperBoard = stamp(Board, {
 					this.firstClickIndex = cell.index;
 					this.addMines();
 				}
-				this.revealAdjacentsIfEmpty(cell, cell.index);
+				this.revealAdjacentsIfEmpty(cell, cell.index, 100);
 			}
 		},
 		revealAll() {
@@ -178,27 +180,28 @@ export const SweeperBoard = stamp(Board, {
 		checkAndUpdateAdjacent(
 			index,
 			check: (cell, dir: number) => boolean,
-			cb: (cell, dir: number) => void
+			cb: (cell, dir: number) => void,
+			delay = 1
 		): void {
 			const row = Math.floor(index / this.size[1]),
 				[nw, n, ne, w, e, sw, s, se] = this.getAdjIndex(index);
 
 			if (this.isNorth(row, nw) && check(this.cells[nw], nw))
-				setTimeout(() => cb(this.cells[nw], nw), 1);
+				setTimeout(() => cb(this.cells[nw], nw), delay);
 			if (this.isNorth(row, n) && check(this.cells[n], n))
-				setTimeout(() => cb(this.cells[n], n), 1);
+				setTimeout(() => cb(this.cells[n], n), delay);
 			if (this.isNorth(row, ne) && check(this.cells[ne], ne))
-				setTimeout(() => cb(this.cells[ne], ne), 1);
+				setTimeout(() => cb(this.cells[ne], ne), delay);
 			if (this.isSameRow(row, w) && check(this.cells[w], w))
-				setTimeout(() => cb(this.cells[w], w), 1);
+				setTimeout(() => cb(this.cells[w], w), delay);
 			if (this.isSameRow(row, e) && check(this.cells[e], e))
-				setTimeout(() => cb(this.cells[e], e), 1);
+				setTimeout(() => cb(this.cells[e], e), delay);
 			if (this.isSouth(row, sw) && check(this.cells[sw], sw))
-				setTimeout(() => cb(this.cells[sw], sw), 1);
+				setTimeout(() => cb(this.cells[sw], sw), delay);
 			if (this.isSouth(row, s) && check(this.cells[s], s))
-				setTimeout(() => cb(this.cells[s], s), 1);
+				setTimeout(() => cb(this.cells[s], s), delay);
 			if (this.isSouth(row, se) && check(this.cells[se], se))
-				setTimeout(() => cb(this.cells[se], se), 1);
+				setTimeout(() => cb(this.cells[se], se), delay);
 		},
 		getTotalMines(): number {
 			return this.getAllMines().length;

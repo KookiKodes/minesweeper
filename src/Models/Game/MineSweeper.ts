@@ -9,10 +9,10 @@ import "../../styles/minesweeper.css";
 export const MineSweeper = stamp(EventHandler, {
 	props: {
 		board: SweeperBoard({
-			size: [10, 10],
-			cellSize: 100,
+			size: [20, 20],
+			cellSize: 50,
 			className: "board",
-			minePercentage: 0.21,
+			minePercentage: 0.01,
 		}),
 		interface: SweeperInterface({ className: "interface" }),
 		element: "main",

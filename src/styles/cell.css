@@ -3,8 +3,8 @@
 	position: relative;
 	align-items: center;
 	justify-content: center;
-	background: var(--prim);
-	border-radius: 0.5em;
+	background: var(--prim-400);
+	border-radius: 10%;
 	box-shadow: 0 0 0 1px var(--sec);
 	box-sizing: border-box;
 	border-right: 3px outset var(--prim-100);
@@ -21,13 +21,13 @@
 
 .cell:hover {
 	cursor: pointer;
-	transform: translateZ(1000px);
-	box-shadow: 0 0 1px 2px var(--sec);
+	transform: translateZ(1000px) scale(1.05);
+	box-shadow: 0 0 3px 2px var(--accent-600);
 	z-index: 100;
 }
 
 svg[data-name="flag-marker"] {
-	color: red;
+	color: var(--sec-100);
 	width: 70%;
 	height: 70%;
 }
@@ -35,13 +35,7 @@ svg[data-name="flag-marker"] {
 svg[data-name="mine"] {
 	width: 70%;
 	height: 70%;
-	color: var(--accent);
-}
-
-path {
-	stroke: var(--prim-900);
-	stroke-width: 5px;
-	stroke-linejoin: round;
+	color: var(--accent-500);
 }
 
 .is-mine {
@@ -52,6 +46,21 @@ path {
 
 .is-mine svg[data-name="mine"] {
 	animation: 0.3s cubic-bezier(0.1, -0.6, 0.2, 0) 0.1s infinite alternate stay !important;
+}
+
+.revealed {
+	border: none;
+	transform: translateZ(1000px);
+	background: var(--accent-600);
+	animation: 0.3s ease-in bounce;
+	border: 2px solid var(--prim-100);
+}
+
+.revealed:hover {
+	z-index: 0 !important;
+	box-shadow: 0 0 0 1px var(--sec) !important;
+	transform: scale(1);
+	cursor: default;
 }
 
 @keyframes stay {
@@ -72,7 +81,7 @@ path {
 
 	75% {
 		transform: scale(1.05);
-		color: var(--sec);
+		color: var(--prim);
 	}
 
 	100% {
@@ -103,34 +112,21 @@ path {
 	100% {
 		transform: scale(1.1) translate(-10%, -10%) perspective(500px);
 		filter: blur(3px);
-		box-shadow: -5px -10px 10px 1px var(--accent);
+		box-shadow: -5px -10px 10px 1px var(--prim);
 	}
 }
 
-.revealed {
-	border: none;
-	transform: translateZ(1000px);
-	background: var(--prim-600);
-	animation: 0.3s ease-out flip;
-}
-
-@keyframes flip {
+@keyframes bounce {
 	0% {
 		transform: scale(1);
 		z-index: 1000;
 	}
 	50% {
-		transform: scale(1.4);
+		transform: scale(1.2);
 		z-index: 1000;
 	}
 	100% {
 		transform: scale(1);
 		z-index: 1;
 	}
-}
-
-.revealed:hover {
-	z-index: 0 !important;
-	box-shadow: 0 0 0 1px var(--sec) !important;
-	cursor: default;
 }
