@@ -1,24 +1,15 @@
 import stamp from "tp-stampit";
-import { Text } from "../View/Text";
+import { Incrementor } from "../Helpers/Incrementor";
 
-export const Adjacent = stamp(Text, {
+export const Adjacent = stamp(Incrementor, {
 	props: {
 		element: "p",
 		value: 0,
-		name: "adjacent",
 	},
 	init() {
 		this.remText();
 	},
 	methods: {
-		increment() {
-			this.value += 1;
-			this.update();
-		},
-		decrement() {
-			this.value -= 1;
-			this.update();
-		},
 		update() {
 			this.setColor();
 			this.addText(this.value);

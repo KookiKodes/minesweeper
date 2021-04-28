@@ -12,26 +12,48 @@ export const MineSweeper = stamp(EventHandler, {
 			size: [20, 20],
 			cellSize: 50,
 			className: "board",
-			minePercentage: 0.01,
+			minePercentage: 0.21,
 		}),
-		interface: SweeperInterface({ className: "interface" }),
+		interface: SweeperInterface({ className: "interface", timerPadding: 3 }),
 		element: "main",
 	},
 	init({}) {
-		this.appendElem(this.board);
-		const button = Button({ value: Text({ value: "Update Board Size" }) });
-		this.appendElem(button);
-		button.addEvent("click", (e) => {
+		this.appendElem(this.interface, this.board);
+
+		this.board.addEvent("click", (e) => {
+			const cell = this.board.findCellFromElem(e.target);
+			this.updateMineCounter();
+			this.interface.startTimer();
+			if (cell.isMine()) {
+				this.board.revealAllMines();
+				this.interface.stopTimer();
+			}
+		});
+
+		this.interface.resetButton.addEvent("click", (e) => {
+			const { size, cellSize } = this.board;
 			const newBoard = SweeperBoard({
-				size: [30, 30],
-				cellSize: 70,
+				size,
+				cellSize,
 				className: "board",
-				minePercentage: 0.1,
+				minePercentage: 0.21,
 			});
-			this.board.replaceElem(newBoard);
+			this.replaceChildElem(this.board, newBoard);
+			newBoard.copyAllEvents(this.board);
 			delete this.board;
 			this.board = newBoard;
+			this.interface.resetAll();
 		});
+	},
+	methods: {
+		updateMineCounter() {
+			const totalMines = this.board.getTotalMines();
+			this.interface.setTotalMines(totalMines);
+		},
+		reset() {
+			this.timer.reset();
+			this.interface.reset();
+		},
 	},
 	propertyDescriptors: {
 		name: { value: "minesweeper" },

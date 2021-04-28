@@ -9,16 +9,29 @@ export const EventHandler = stamp(ElementHandler, {
 		this.events = new Map();
 	},
 	methods: {
+		createCbFunc(type: string) {
+			return (event: Event) =>
+				this.events.get(type).forEach((func) => func(event));
+		},
 		addEvent(type: string, eventFn: (e: Event) => void) {
-			const cb = (event: Event) => {
-				eventFn(event);
-			};
-			if (!this.events.has(type)) this.events.set(type, [cb]);
-			else this.events.get(type).push(cb);
-			this.element.addEventListener(type, cb);
+			const cb = this.createCbFunc(type);
+
+			if (!this.events.has(type)) {
+				this.events.set(type, new Set([eventFn]));
+				this.element.addEventListener(type, cb);
+			} else this.events.get(type).add(eventFn);
 		},
 		clearAllEvents() {
 			this.events.clear();
+		},
+		copyAllEvents(stamp) {
+			stamp.events.forEach((value, key) => {
+				if (value instanceof Set) {
+					value.forEach((event) => {
+						this.addEvent(key, event);
+					});
+				} else this.addEvent(key, value);
+			});
 		},
 	},
 	propertyDescriptors: {

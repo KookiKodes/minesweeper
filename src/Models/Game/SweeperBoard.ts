@@ -18,10 +18,10 @@ export const SweeperBoard = stamp(Board, {
 		this.mines = [];
 		this.generateBoard(async (cellValueType) => cellValueType[0]());
 
+		this.addMines = this.addMines.bind(this, minePercentage);
+
 		this.addEvent("contextmenu", this.updateMarker.bind(this));
 		this.addEvent("click", this.revealCell.bind(this));
-
-		this.addMines = this.addMines.bind(this, minePercentage);
 	},
 	methods: {
 		async updateMineAdjacents() {
@@ -71,6 +71,15 @@ export const SweeperBoard = stamp(Board, {
 				}
 				this.revealAdjacentsIfEmpty(cell, cell.index, 100);
 			}
+		},
+		revealAllMines(delay: number = 0) {
+			this.mines.forEach((mine) => {
+				if (!mine.isRevealed()) {
+					setTimeout(() => {
+						mine.reveal();
+					}, delay);
+				}
+			});
 		},
 		revealAll() {
 			this.cells.forEach((cell) => {
