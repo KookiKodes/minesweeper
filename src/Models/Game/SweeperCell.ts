@@ -44,6 +44,9 @@ export const SweeperCell = stamp(Cell, {
 		isEmpty() {
 			return this.value.value === 0;
 		},
+		isMarked() {
+			return this.marked;
+		},
 	},
 	propertyDescriptors: {
 		name: { value: "sweeper-cell" },

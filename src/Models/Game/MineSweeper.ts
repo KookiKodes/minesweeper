@@ -26,7 +26,17 @@ export const MineSweeper = stamp(EventHandler, {
 			this.interface.startTimer();
 			if (cell.isMine()) {
 				this.board.revealAllMines();
+				this.board.events = new Map();
 				this.interface.stopTimer();
+			}
+		});
+
+		this.board.addEvent("contextmenu", (e) => {
+			const cell = this.board.findCellFromElem(e.target);
+			if (cell.isMarked()) {
+				this.interface.mineCounter.decrement();
+			} else {
+				this.interface.mineCounter.increment();
 			}
 		});
 
