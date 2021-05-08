@@ -6,9 +6,11 @@ export const Cell = stamp(EventHandler, {
 		value: null,
 		element: "div",
 		index: 0,
+		size: 0,
 	},
 	init({ value = this.value, size = this.size, index = this.index }) {
 		this.value = value;
+		this.size = size;
 		this.index = index;
 		this.appendElem(this.value);
 		this.addAttr(["id", `${this.name}-${this.index}`]);

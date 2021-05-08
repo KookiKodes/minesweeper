@@ -4,6 +4,7 @@
 	justify-content: space-between;
 	position: fixed;
 	top: 0;
+	left: 0;
 	width: 100%;
 	background: var(--prim-700);
 	padding: 25px;
@@ -46,4 +47,10 @@
 	cursor: pointer;
 	padding: 30px;
 	min-width: 5%;
+	transition: 0.2s cubic-bezier(0.34, 0.2, 0.5, 0.9);
+}
+
+.reset:hover {
+	transform: scale(1.2);
+	transition: 0.2s cubic-bezier(0.34, 0.2, 0.5, 0.9);
 }

@@ -7,15 +7,12 @@
 	border-radius: 10%;
 	box-shadow: 0 0 0 1px var(--sec);
 	box-sizing: border-box;
-	border-right: 3px outset var(--prim-100);
-	border-bottom: 3px outset var(--prim-100);
+	/* border-right: 3px outset var(--prim-100); border-bottom: 3px outset var(--prim-100);
 	border-top: 3px outset var(--prim-600);
-	border-left: 3px outset var(--prim-600);
-	margin: 0;
+	border-left: 3px outset var(--prim-600); */
 }
 
 .cell p {
-	font-size: calc(100% + 1vw);
 	opacity: 50%;
 }
 
@@ -30,12 +27,14 @@ svg[data-name="flag-marker"] {
 	color: var(--sec-100);
 	width: 70%;
 	height: 70%;
+	pointer-events: none;
 }
 
 svg[data-name="mine"] {
 	width: 70%;
 	height: 70%;
 	color: var(--accent-500);
+	pointer-events: none;
 }
 
 .is-mine {
@@ -49,7 +48,7 @@ svg[data-name="mine"] {
 }
 
 .revealed {
-	border: none;
+	border: none !important;
 	transform: translateZ(1000px);
 	background: var(--accent-600);
 	animation: 0.3s ease-in bounce;

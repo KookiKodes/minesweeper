@@ -49,6 +49,20 @@ export const ElementHandler = stamp({
 				this.element.setAttribute(key, value);
 			});
 		},
+		async getWidth(): Promise<number> {
+			return new Promise((resolve, _) => {
+				setTimeout(() => {
+					resolve(this.element.offsetHeight);
+				}, 1);
+			});
+		},
+		async getHeight(): Promise<number> {
+			return new Promise((resolve, _) => {
+				setTimeout(() => {
+					resolve(this.element.offsetHeight);
+				}, 1);
+			});
+		},
 		remAttr(...args: string[]): void {
 			args.forEach((key) => {
 				this.element.removeAttribute(key);

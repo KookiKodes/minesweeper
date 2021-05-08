@@ -1,35 +1,47 @@
 import stamp from "tp-stampit";
 import { SweeperBoard } from "./SweeperBoard";
 import { SweeperInterface } from "./SweeperInterface";
+import { Modal } from "../Helpers/Modal";
 import { EventHandler } from "../Helpers/EventHandler";
-import { Button } from "../View/Button";
-import { Text } from "../View/Text";
 import "../../styles/minesweeper.css";
 
 export const MineSweeper = stamp(EventHandler, {
 	props: {
 		board: SweeperBoard({
 			size: [20, 20],
-			cellSize: 50,
+			cellSize: 100,
 			className: "board",
 			minePercentage: 0.21,
 		}),
 		interface: SweeperInterface({ className: "interface", timerPadding: 3 }),
 		element: "main",
+		startModal: Modal({
+			header: "Minesweeper",
+		}),
 	},
 	init({}) {
-		this.appendElem(this.interface, this.board);
+		this.appendElem(this.interface, this.board, this.startModal);
+		this.addMarginToBoard();
 
 		this.board.addEvent("click", (e) => {
 			const cell = this.board.findCellFromElem(e.target);
-			this.updateMineCounter();
-			this.interface.startTimer();
+			if (cell.isMarked() && !cell.isMine()) {
+				this.interface.mineCounter.increment();
+			}
 			if (cell.isMine()) {
 				this.board.revealAllMines();
-				this.board.events = new Map();
 				this.interface.stopTimer();
 			}
 		});
+
+		this.board.addEvent(
+			"click",
+			() => {
+				this.updateMineCounter();
+				this.interface.startTimer();
+			},
+			{ once: true }
+		);
 
 		this.board.addEvent("contextmenu", (e) => {
 			const cell = this.board.findCellFromElem(e.target);
@@ -53,9 +65,17 @@ export const MineSweeper = stamp(EventHandler, {
 			delete this.board;
 			this.board = newBoard;
 			this.interface.resetAll();
+			this.addMarginToBoard();
 		});
 	},
 	methods: {
+		addMarginToBoard() {
+			this.interface.getWidth().then((height) => {
+				this.board.style({
+					margin: `${height + 30}px 30px 30px 30px`,
+				});
+			});
+		},
 		updateMineCounter() {
 			const totalMines = this.board.getTotalMines();
 			this.interface.setTotalMines(totalMines);

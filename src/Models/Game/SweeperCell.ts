@@ -9,12 +9,13 @@ export const SweeperCell = stamp(Cell, {
 		marker: FlagMarker,
 		revealed: false,
 	},
-	init() {
+	init({ size = 0 }) {
 		this.removeElem(this.value);
 		this.marker = this.marker();
 		this.marker.hideElem();
 		this.appendElem(this.marker);
 		this.addAttr(["index", this.index]);
+		this.initDynamicStyling();
 	},
 	methods: {
 		reveal() {
@@ -23,8 +24,17 @@ export const SweeperCell = stamp(Cell, {
 			this.appendElem(this.value);
 			this.addClass("revealed");
 			if (this.isMine()) this.addClass("is-mine");
-			delete this.marker;
-			delete this.marked;
+		},
+		initDynamicStyling() {
+			this.value.style({
+				fontSize: `${Math.round(this.size * 0.7)}px`,
+			});
+			this.style({
+				borderRight: `${Math.round(this.size * 0.1)}px outset var(--prim-100)`,
+				borderBottom: `${Math.round(this.size * 0.1)}px outset var(--prim-100)`,
+				borderTop: `${Math.round(this.size * 0.1)}px inset var(--prim-600)`,
+				borderLeft: `${Math.round(this.size * 0.1)}px outset var(--prim-600)`,
+			});
 		},
 		updateValue(value) {
 			this.value = value;

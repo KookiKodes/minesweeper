@@ -9,17 +9,29 @@ export const EventHandler = stamp(ElementHandler, {
 		this.events = new Map();
 	},
 	methods: {
-		createCbFunc(type: string) {
+		createEventFunction(type: string) {
 			return (event: Event) =>
 				this.events.get(type).forEach((func) => func(event));
 		},
-		addEvent(type: string, eventFn: (e: Event) => void) {
-			const cb = this.createCbFunc(type);
+		createCustomCb(type, cb, options: { once: boolean }) {
+			const customCb = (event: Event) => {
+				cb(event);
+				if (options && options.once) this.events.get(type).delete(customCb);
+			};
+			return customCb;
+		},
+		addEvent(
+			type: string,
+			eventFn: (e: Event) => void,
+			options: { once: boolean } = { once: false }
+		) {
+			const eventQueueFunc = this.createEventFunction(type);
+			const customCb = this.createCustomCb(type, eventFn, options);
 
 			if (!this.events.has(type)) {
 				this.events.set(type, new Set([eventFn]));
-				this.element.addEventListener(type, cb);
-			} else this.events.get(type).add(eventFn);
+				this.element.addEventListener(type, eventQueueFunc);
+			} else this.events.get(type).add(customCb);
 		},
 		clearAllEvents() {
 			this.events.clear();

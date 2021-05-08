@@ -72,12 +72,10 @@ export const SweeperBoard = stamp(Board, {
 				this.revealAdjacentsIfEmpty(cell, cell.index, 100);
 			}
 		},
-		revealAllMines(delay: number = 0) {
+		revealAllMines() {
 			this.mines.forEach((mine) => {
 				if (!mine.isRevealed()) {
-					setTimeout(() => {
-						mine.reveal();
-					}, delay);
+					mine.reveal();
 				}
 			});
 		},
@@ -134,7 +132,7 @@ export const SweeperBoard = stamp(Board, {
 		},
 		findCellFromElem(elem: Element): any {
 			if (!elem.hasAttribute("index")) {
-				return this.findCellFromElem(elem.parentNode);
+				return this.findCellFromElem(elem.parentElement);
 			}
 			const index = elem.getAttribute("index");
 			return this.cells[index];
