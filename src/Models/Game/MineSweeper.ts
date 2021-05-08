@@ -25,11 +25,18 @@ export const MineSweeper = stamp(EventHandler, {
 
 		this.board.addEvent("click", (e) => {
 			const cell = this.board.findCellFromElem(e.target);
+			if (
+				this.board.cells.length - this.board.mines.length ===
+				this.board.revealedCells.size
+			) {
+				console.log("You win!");
+				return;
+			}
 			if (cell.isMarked() && !cell.isMine()) {
 				this.interface.mineCounter.increment();
 			}
 			if (cell.isMine()) {
-				this.board.revealAllMines();
+				this.board.revealAllMines(100);
 				this.interface.stopTimer();
 			}
 		});
@@ -45,10 +52,12 @@ export const MineSweeper = stamp(EventHandler, {
 
 		this.board.addEvent("contextmenu", (e) => {
 			const cell = this.board.findCellFromElem(e.target);
-			if (cell.isMarked()) {
-				this.interface.mineCounter.decrement();
-			} else {
-				this.interface.mineCounter.increment();
+			if (!cell.isRevealed()) {
+				if (cell.isMarked()) {
+					this.interface.mineCounter.decrement();
+				} else {
+					this.interface.mineCounter.increment();
+				}
 			}
 		});
 
